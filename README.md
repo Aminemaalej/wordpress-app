@@ -1,4 +1,4 @@
-Task Description 
+# Task Description 
 Build an infrastructure on AWS (using a free account) for a global WordPress (https://wordpress.org/download/) application with the below requirements: 
 • 30% of customers live in Ireland and 60% Singapore and the rest spread across the globe. 
 • The application needs to allow restrictions for certain geographical locations. 
@@ -6,7 +6,7 @@ Build an infrastructure on AWS (using a free account) for a global WordPress (ht
 • Uptime, latency, optimization, scalability, and low complexity of infrastructure are the most important factors. 
 • Cost is not important. 
 • Domain name is not required (a bare IP address is sufficient) 
-Assessment 
+# Assessment 
 You must deploy the solution in AWS using free trial eligible services. 
 The solution needs to be explained by submitting a document (Max 3 pages) that outlines the rationale and approach. 
 The document may contain – 
