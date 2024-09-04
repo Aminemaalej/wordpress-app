@@ -1,4 +1,4 @@
-aws_region = "eu-west-1"
+aws_region = "ap-southeast-1"
 
 ### EC2
 

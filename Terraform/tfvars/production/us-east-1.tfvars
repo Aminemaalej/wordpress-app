@@ -1,4 +1,4 @@
-aws_region = "eu-west-1"
+aws_region = "us-east-1"
 
 ### EC2
 
@@ -8,4 +8,4 @@ ec2_asg_max_size         = 2
 
 ### RDS
 
-db_multi_az = false
+db_multi_az = true
