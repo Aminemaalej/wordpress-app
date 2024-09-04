@@ -22,13 +22,13 @@ resource "aws_security_group_rule" "wordpress_db_security_group_egress" {
 
 resource "aws_security_group_rule" "wordpress_db_security_group_postgres" {
   security_group_id = aws_security_group.wordpress_db_security_group.id
-  description       = "wordpress-db allow Postgres port 5432"
+  description       = "wordpress-db allow MySQL port 3306"
 
   type      = "ingress"
   protocol  = "tcp"
   self      = "true"
-  from_port = 5432
-  to_port   = 5432
+  from_port = 3306
+  to_port   = 3306
 }
 
 resource "aws_db_instance" "wordpress_db" {
