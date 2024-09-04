@@ -1,0 +1,85 @@
+pipeline {
+    agent any
+
+    environment {
+        REGIONS = ['eu-west-1', 'ap-southeast-1','us-east-1']
+        AWS_CREDS = 'terraform-jenkins-agent'
+    }
+
+    stages {
+        stage('Checkout Git Repo') {
+            steps {
+                // Checkout the Git repository
+                git url: 'https://github.com/Aminemaalej/wordpress-app.git', branch: 'main'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    // Initialize Terraform
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                echo "Initializing Terraform in"
+                                sh """
+                                    terraform init"
+                                """
+                            }
+                        }
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                script {
+                    // Plan Terraform for each region
+                    for (region in REGIONS) {
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                echo "Planning Terraform in ${region}..."
+                                sh """
+                                    terraform plan -var-file="./tfvars/production/${region}.tfvars""
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    // Apply Terraform plan for each region
+                    for (region in REGIONS) {
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                echo "Applying Terraform in ${region}..."
+                                sh """
+                                    terraform apply -auto-approve -var-file="./tfvars/production/${region}.tfvars
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        failure {
+            mail to: 'aminemaalej96@gmail.com',
+                 subject: "FAILED: Terraform Jenkins Production Pipeline",
+                 body: "Pipeline failed. Please check the logs."
+            script {
+                if ("${env.BRANCH_NAME}" == main) {
+                    slacksend channel: '#jenkins', teamDomain: 'nasdaq', color: 'danger', message "FAILURE in ${env.JOB_NAME} (#${env.BUILD_ID}\n ${env.BUILD_URL})", tokenCredentialId: 'slack-token'
+                }
+            }
+        }
+    }
+}
