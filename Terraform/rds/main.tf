@@ -38,12 +38,13 @@ resource "aws_db_instance" "wordpress_db" {
   db_subnet_group_name       = aws_db_subnet_group.wordpress_db_subnet_group.name
   deletion_protection        = false
   skip_final_snapshot        = true
-  engine                     = "postgres"
-  engine_version             = "16.4"
+  engine                     = "mysql"
+  engine_version             = "8.0"
   identifier                 = "wordpress-db"
   instance_class             = "db.t3.micro"
   multi_az                   = var.db_multi_az
   password                   = "nasdaq-wordpress-db-password"
+  parameter_group_name       = "default.mysql8.0"
   publicly_accessible        = false
   storage_encrypted          = false
   storage_type               = "gp2"
