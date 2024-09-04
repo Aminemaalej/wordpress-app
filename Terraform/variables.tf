@@ -3,6 +3,13 @@ variable "aws_region" {
   description = "AWS region"
 }
 
+### VPC
+
+variable "vpc_cidr_block" {
+  description = "CIDR block for VPC"
+  type        = string
+}
+
 ### EC2
 
 variable "ec2_asg_desired_capacity" {

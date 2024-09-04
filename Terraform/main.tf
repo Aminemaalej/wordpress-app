@@ -14,7 +14,8 @@ provider "aws" {
 module "vpc" {
   source = "./vpc"
 
-  aws_region = var.aws_region
+  aws_region     = var.aws_region
+  vpc_cidr_block = var.vpc_cidr_block
 }
 
 module "rds" {
