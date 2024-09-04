@@ -12,18 +12,18 @@ resource "aws_launch_template" "wordpress_lt" {
   iam_instance_profile {
     name = aws_iam_instance_profile.ssm_instance_profile.name
   }
-  
-# To test connectivity between EC2 and the ALB
 
-#   user_data = base64encode(<<-EOF
-#               #!/bin/bash
-#               sudo yum update -y
-#               sudo yum install -y httpd
-#               sudo systemctl start httpd
-#               sudo systemctl enable httpd
-#               echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
-#               EOF
-#   )
+  # To test connectivity between EC2 and the ALB
+
+  #   user_data = base64encode(<<-EOF
+  #               #!/bin/bash
+  #               sudo yum update -y
+  #               sudo yum install -y httpd
+  #               sudo systemctl start httpd
+  #               sudo systemctl enable httpd
+  #               echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+  #               EOF
+  #   )
 
 }
 

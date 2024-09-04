@@ -1,0 +1,49 @@
+---
+- name: Install required Apache and PHP packages
+  yum:
+    name: 
+      - httpd
+      - php
+      - php-mysqlnd
+      - wget
+    state: present
+
+- name: Start and enable Apache
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Download WordPress
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /tmp/latest.tar.gz
+
+- name: Extract WordPress
+  unarchive:
+    src: /tmp/latest.tar.gz
+    dest: /var/www/html
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Set ownership permissions for WordPress
+  file:
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+
+- name: Configure wp-config.php
+  template:
+    src: wp-config.php.j2
+    dest: /var/www/html/wp-config.php
+
+- name: Allow HTTP traffic through the firewall
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+
+- name: Reload firewall to apply changes
+  command: firewall-cmd --reload
