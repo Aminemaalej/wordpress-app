@@ -59,3 +59,16 @@ resource "aws_internet_gateway" "main" {
     Name = "wordpress-vpc Internet Gateway"
   }
 }
+
+resource "aws_eip" "eip" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.eip.id
+  subnet_id     = aws_subnet.public_a.id
+
+  tags = {
+    Name = "wordpress-vpc NAT Gateway"
+  }
+}

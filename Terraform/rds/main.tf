@@ -4,7 +4,7 @@ resource "aws_db_subnet_group" "wordpress_db_subnet_group" {
 }
 
 resource "aws_security_group" "wordpress_db_security_group" {
-  name        = "wordpress-db Security Group"
+  name        = "wordpress-db-sg"
   description = "wordpress-db Security Group"
   vpc_id      = var.vpc_id
 }
@@ -37,7 +37,7 @@ resource "aws_db_instance" "wordpress_db" {
   auto_minor_version_upgrade = false
   db_subnet_group_name       = aws_db_subnet_group.wordpress_db_subnet_group.name
   deletion_protection        = false
-  skip_final_snapshot = true
+  skip_final_snapshot        = true
   engine                     = "postgres"
   engine_version             = "16.4"
   identifier                 = "wordpress-db"

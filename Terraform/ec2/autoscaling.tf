@@ -8,6 +8,16 @@ resource "aws_launch_template" "wordpress_lt" {
     associate_public_ip_address = false
     delete_on_termination       = true
   }
+
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              sudo yum update -y
+              sudo yum install -y httpd
+              sudo systemctl start httpd
+              sudo systemctl enable httpd
+              echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+              EOF
+  )
 }
 
 resource "aws_autoscaling_group" "wordpress_asg" {
@@ -17,8 +27,6 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   min_size            = var.asg_min_size
   max_size            = var.asg_max_size
   target_group_arns   = [aws_lb_target_group.wordpress_lb.arn]
-  health_check_type   = "EC2"
-#   health_check_type   = "ELB"
 
   launch_template {
     id      = aws_launch_template.wordpress_lt.id
