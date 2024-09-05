@@ -23,7 +23,7 @@ pipeline {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                                 echo "Initializing Terraform in"
                                 sh """
-                                    terraform init"
+                                    terraform init
                                 """
                             }
                         }
@@ -40,7 +40,7 @@ pipeline {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                                 echo "Planning Terraform in ${region}..."
                                 sh """
-                                    terraform plan -var-file="./tfvars/staging/${region}.tfvars""
+                                    terraform plan -var-file="./tfvars/staging/${region}.tfvars
                                 """
                             }
                         }
