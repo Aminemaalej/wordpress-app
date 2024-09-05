@@ -1,15 +1,15 @@
+REGIONS = ['eu-west-1', 'ap-southeast-1','us-east-1']
+
 pipeline {
     agent any
 
     environment {
-        REGIONS = ['eu-west-1', 'ap-southeast-1','us-east-1']
-        AWS_CREDS = 'terraform-jenkins-agent'
+        AWS_CREDS = 'terraform-user'
     }
 
     stages {
         stage('Checkout Git Repo') {
             steps {
-                // Checkout the Git repository
                 git url: 'https://github.com/Aminemaalej/wordpress-app.git', branch: 'main'
             }
         }
@@ -17,10 +17,9 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    // Initialize Terraform
                         dir("Terraform") {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                                echo "Initializing Terraform in"
+                                echo "Initializing Terraform"
                                 sh """
                                     terraform init"
                                 """
@@ -33,7 +32,6 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // Plan Terraform for each region
                     for (region in REGIONS) {
                         dir("Terraform") {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -51,7 +49,6 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Apply Terraform plan for each region
                     for (region in REGIONS) {
                         dir("Terraform") {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
