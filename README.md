@@ -1,4 +1,4 @@
-# Task Description 
+# Task Description  
 Build an infrastructure on AWS (using a free account) for a global WordPress (https://wordpress.org/download/) application with the below requirements: 
 • 30% of customers live in Ireland and 60% Singapore and the rest spread across the globe. 
 • The application needs to allow restrictions for certain geographical locations. 
