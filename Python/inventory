@@ -1,0 +1,2 @@
+[wordpress]
+i-0030954c457c662c5 ansible_connection=amazon.aws.ssm ansible_user=ec2-user

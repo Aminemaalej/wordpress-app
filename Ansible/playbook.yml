@@ -1,5 +1,7 @@
 ---
 - hosts: wordpress
   become: true
+  gather_facts: false
+  connection: amazon.aws.ssm
   roles:
     - wordpress

@@ -25,7 +25,7 @@ asg_client = boto3.client('autoscaling', region_name=region_name)
 ssm_client = boto3.client('ssm', region_name=region_name)
 
 asg_name = 'wordpress-asg'
-playbook_file = 'Ansible/playbook.yml'
+playbook_file = '../Ansible/playbook.yml'
 
 # Fetch EC2 instance IDs from Auto Scaling Group
 def get_instance_ids_from_asg(asg_name):
