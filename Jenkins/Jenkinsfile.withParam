@@ -11,7 +11,7 @@ pipeline {
     environment {
         ENVIRONMENT_MAP = [Staging: 'staging', Production: 'production']
         REGION_MAP = [Ireland: 'eu-west-1', Singapore: 'ap-southeast-1', America: 'us-east-1']
-        AWS_CREDS = 'terraform-jenkins-agent'
+        AWS_CREDS = 'terraform-user'
     }
 
     stages {
@@ -82,19 +82,19 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            cleanWs()
-        }
-        failure {
-            mail to: 'aminemaalej96@gmail.com',
-                 subject: "FAILED: Terraform Jenkins Staging Pipeline",
-                 body: "Pipeline failed. Please check the logs."
-            script {
-                if ("${env.BRANCH_NAME}" == main) {
-                    slacksend channel: '#jenkins', teamDomain: 'nasdaq', color: 'danger', message "FAILURE in ${env.JOB_NAME} (#${env.BUILD_ID}\n ${env.BUILD_URL})", tokenCredentialId: 'slack-token'
-                }
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     failure {
+    //         mail to: 'aminemaalej96@gmail.com',
+    //              subject: "FAILED: Terraform Jenkins Staging Pipeline",
+    //              body: "Pipeline failed. Please check the logs."
+    //         script {
+    //             if ("${env.BRANCH_NAME}" == main) {
+    //                 slacksend channel: '#jenkins', teamDomain: 'nasdaq', color: 'danger', message "FAILURE in ${env.JOB_NAME} (#${env.BUILD_ID}\n ${env.BUILD_URL})", tokenCredentialId: 'slack-token'
+    //             }
+    //         }
+    //     }
+    // }
 }
