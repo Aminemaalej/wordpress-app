@@ -1,16 +1,17 @@
 // Manually triggered with Parameters
+ENVIRONMENT_MAP = [Staging: 'staging', Production: 'production']
+REGION_MAP = [Ireland: 'eu-west-1', Singapore: 'ap-southeast-1', America: 'us-east-1']
+
 pipeline {
     agent any
 
     parameters {
         choice(name: 'environmentToDeploy', choices: ['Staging', 'Production'], description: 'Select the environment to deploy')
-        multiSelect(name: 'regionToDeploy', choices: ['Ireland', 'Singapore', 'America'], description: 'Select the regions to deploy')
+        choice(name: 'regionToDeploy', choices: ['Ireland', 'Singapore', 'America'], description: 'Select the regions to deploy')
         choice(name: 'workflow', choices: ['apply', 'destroy'], description: 'Select terraform workflow') 
     }
 
     environment {
-        ENVIRONMENT_MAP = [Staging: 'staging', Production: 'production']
-        REGION_MAP = [Ireland: 'eu-west-1', Singapore: 'ap-southeast-1', America: 'us-east-1']
         AWS_CREDS = 'terraform-user'
     }
 
