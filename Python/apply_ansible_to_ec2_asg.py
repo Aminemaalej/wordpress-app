@@ -62,7 +62,7 @@ def check_instance_managed(instance_id):
 def run_ansible_playbook():
     try:
         print(f"Running Ansible playbook: {playbook_file}")
-        subprocess.run(['ansible-playbook', '-i', 'inventory', playbook_file], check=True)
+        subprocess.run(['ansible-playbook', '-i', '../Ansible/inventory', playbook_file], check=True)
         print("Ansible playbook applied successfully!")
     except subprocess.CalledProcessError as e:
         print(f"Error applying Ansible playbook: {e}")
@@ -78,7 +78,6 @@ if __name__ == "__main__":
 
     for instance_id in instance_ids:
         if check_instance_managed(instance_id):
-            # Run Ansible playbook
             run_ansible_playbook()
         else:
             print(f"Instance {instance_id} is not managed by SSM. Skipping.")
