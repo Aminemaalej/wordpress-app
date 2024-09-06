@@ -15,22 +15,13 @@ pipeline {
             }
         }
 
-        stage('Check AWS Credentials') {
-            steps {
-                script {
-                    sh 'echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"'
-                    sh 'echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"'
-                }
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 script {
                         dir("Terraform") {
                                 echo "Initializing Terraform"
                                 sh """
-                                    terraform init
+                                    TF_LOG=DEBUG terraform init
                                 """
                         }
                 }
