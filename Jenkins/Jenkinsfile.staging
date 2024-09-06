@@ -4,8 +4,6 @@ pipeline {
     agent any
 
     environment {
-        // AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        // AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_CREDS = 'terraform-user'
     }
 
@@ -34,51 +32,51 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // for (region in REGIONS) {
+                    for (region in REGIONS) {
                         dir("Terraform") {
                             withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                                // echo "Planning Terraform in ${region}..."
+                                echo "Planning Terraform in ${region}..."
                                 sh """
                                     terraform plan -var-file="./tfvars/staging/eu-west-1.tfvars"
                                 """
                             }
-                        // }
+                        }
                     }
                 }
             }
         }
 
-        // stage('Terraform Apply') {
-        //     steps {
-        //         script {
-        //             for (region in REGIONS) {
-        //                 dir("Terraform") {
-        //                     withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-        //                         echo "Applying Terraform in ${region}..."
-        //                         sh """
-        //                             terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars"
-        //                         """
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    for (region in REGIONS) {
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                echo "Applying Terraform in ${region}..."
+                                sh """
+                                    terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars"
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    // post {
-    //     always {
-    //         cleanWs()
-    //     }
-    //     failure {
-    //         mail to: 'aminemaalej96@gmail.com',
-    //              subject: "FAILED: Terraform Jenkins Staging Pipeline",
-    //              body: "Pipeline failed. Please check the logs."
-    //         script {
-    //             if ("${env.BRANCH_NAME}" == main) {
-    //                 slacksend channel: '#jenkins', teamDomain: 'nasdaq', color: 'danger', message "FAILURE in ${env.JOB_NAME} (#${env.BUILD_ID}\n ${env.BUILD_URL})", tokenCredentialId: 'slack-token'
-    //             }
-    //         }
-    //     }
-    // }
+    post {
+        always {
+            cleanWs()
+        }
+        failure {
+            mail to: 'aminemaalej96@gmail.com',
+                 subject: "FAILED: Terraform Jenkins Staging Pipeline",
+                 body: "Pipeline failed. Please check the logs."
+            script {
+                if ("${env.BRANCH_NAME}" == main) {
+                    slacksend channel: '#jenkins', teamDomain: 'nasdaq', color: 'danger', message "FAILURE in ${env.JOB_NAME} (#${env.BUILD_ID}\n ${env.BUILD_URL})", tokenCredentialId: 'slack-token'
+                }
+            }
+        }
+    }
 }
