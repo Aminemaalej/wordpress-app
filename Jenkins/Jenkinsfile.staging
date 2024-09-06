@@ -15,6 +15,15 @@ pipeline {
             }
         }
 
+        stage('Check AWS Credentials') {
+            steps {
+                script {
+                    sh 'echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"'
+                    sh 'echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"'
+                }
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 script {
@@ -35,7 +44,7 @@ pipeline {
                         dir("Terraform") {
                                 echo "Planning Terraform in ${region}..."
                                 sh """
-                                    terraform plan -var-file="./tfvars/staging/${region}.tfvars
+                                    terraform plan -var-file="./tfvars/staging/${region}.tfvars"
                                 """
                         }
                     }
@@ -51,7 +60,7 @@ pipeline {
         //                     withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
         //                         echo "Applying Terraform in ${region}..."
         //                         sh """
-        //                             terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars
+        //                             terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars"
         //                         """
         //                     }
         //                 }
