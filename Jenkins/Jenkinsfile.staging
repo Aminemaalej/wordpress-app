@@ -4,7 +4,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_CREDS = 'terraform-user'
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
     stages {
@@ -18,12 +19,10 @@ pipeline {
             steps {
                 script {
                         dir("Terraform") {
-                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                                 echo "Initializing Terraform"
                                 sh """
                                     terraform init
                                 """
-                            }
                         }
                 }
             }
@@ -34,12 +33,10 @@ pipeline {
                 script {
                     for (region in REGIONS) {
                         dir("Terraform") {
-                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                                 echo "Planning Terraform in ${region}..."
                                 sh """
                                     terraform plan -var-file="./tfvars/staging/${region}.tfvars
                                 """
-                            }
                         }
                     }
                 }
