@@ -46,22 +46,22 @@ pipeline {
             }
         }
 
-        // stage('Terraform Apply') {
-        //     steps {
-        //         script {
-        //             for (region in REGIONS) {
-        //                 dir("Terraform") {
-        //                     withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-        //                         echo "Applying Terraform in ${region}..."
-        //                         sh """
-        //                             terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars"
-        //                         """
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    for (region in REGIONS) {
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                echo "Applying Terraform in ${region}..."
+                                sh """
+                                    terraform apply -auto-approve -var-file="./tfvars/staging/${region}.tfvars"
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // post {
