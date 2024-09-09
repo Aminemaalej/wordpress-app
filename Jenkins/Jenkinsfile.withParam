@@ -8,7 +8,7 @@ pipeline {
     parameters {
         choice(name: 'environmentToDeploy', choices: ['Staging', 'Production'], description: 'Select the environment to deploy')
         choice(name: 'regionToDeploy', choices: ['Ireland', 'Singapore', 'America'], description: 'Select the regions to deploy')
-        // choice(name: 'workflow', choices: ['apply', 'destroy'], description: 'Select terraform workflow') 
+        choice(name: 'workflow', choices: ['apply', 'destroy'], description: 'Select terraform workflow') 
     }
 
     environment {
@@ -57,27 +57,26 @@ pipeline {
             }
         }
 
-        // stage('Terraform Apply/Destroy') {
-        //     steps {
-        //         script {
-        //             def environment = ENVIRONMENT_MAP[params.environmentToDeploy]
-        //             def selectedRegions = params.regionToDeploy.tokenize(',')
-                    
-        //             selectedRegions.each { region ->
-        //                 def selectedRegion = REGION_MAP[region.trim()]
-        //                 echo "Planning in ${environment} for ${selectedRegion}"
+        stage('Terraform Apply/Destroy') {
+            steps {
+                script {
+                    def environment = ENVIRONMENT_MAP[params.environmentToDeploy]
+
+                    // selectedRegions.each { region ->
+                        def selectedRegion = REGION_MAP[params.regionToDeploy]
+                        echo "${workflow}ing in ${environment} for ${selectedRegion}"
                         
-        //                 dir("Terraform") {
-        //                     withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-        //                         sh """
-        //                             terraform ${workflow} --auto-approve -var-file="./tfvars/${environment}/${selectedRegion}.tfvars"
-        //                         """
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                        dir("Terraform") {
+                            withCredentials([aws(accessKeyVariable : 'AWS_ACCESS_KEY_ID', credentialsId: "${AWS_CREDS}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                sh """
+                                    terraform ${workflow} --auto-approve -var-file="./tfvars/${environment}/${selectedRegion}.tfvars
+                                """
+                            }
+                        }
+                    // }
+                }
+            }
+        }
     }
 
     // post {
