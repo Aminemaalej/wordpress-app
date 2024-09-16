@@ -1,7 +1,7 @@
 resource "aws_launch_template" "wordpress_lt" {
   name          = "wordpress-launch-template"
   image_id      = "ami-0034529272b0a8509"
-  instance_type = "t3.micro"
+  instance_type = "t2.micro"
 
   network_interfaces {
     security_groups             = [var.db_security_group, aws_security_group.ec2.id]
